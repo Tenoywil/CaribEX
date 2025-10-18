@@ -11,24 +11,33 @@ export const Header = () => {
   const cartItemCount = useSelector(selectCartItemCount);
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-white shadow-sm sticky top-0 z-50">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
-            CaribEX
+          <Link href="/" className="text-2xl font-bold">
+            <span className="text-gradient">CaribEX</span>
           </Link>
 
           <div className="flex items-center gap-6">
-            <Link href="/marketplace" className="text-gray-700 hover:text-blue-600">
+            <Link 
+              href="/marketplace" 
+              className="text-[#4B5563] hover:text-[#0074F0] font-medium transition-colors"
+            >
               Marketplace
             </Link>
-            <Link href="/wallet" className="text-gray-700 hover:text-blue-600">
+            <Link 
+              href="/wallet" 
+              className="text-[#4B5563] hover:text-[#0074F0] font-medium transition-colors"
+            >
               Wallet
             </Link>
-            <Link href="/cart" className="relative text-gray-700 hover:text-blue-600">
+            <Link 
+              href="/cart" 
+              className="relative text-[#4B5563] hover:text-[#0074F0] font-medium transition-colors"
+            >
               Cart
               {cartItemCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-[#EF4444] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
                   {cartItemCount}
                 </span>
               )}
@@ -36,12 +45,12 @@ export const Header = () => {
 
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-[#4B5563] font-medium">
                   {user?.handle || 'User'}
                 </span>
                 <Link
                   href="/profile"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                  className="btn-primary"
                 >
                   Profile
                 </Link>
@@ -49,7 +58,7 @@ export const Header = () => {
             ) : (
               <Link
                 href="/login"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="btn-primary"
               >
                 Connect Wallet
               </Link>
