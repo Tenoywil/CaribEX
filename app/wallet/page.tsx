@@ -1,21 +1,39 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';
 import { useWallet } from '@/hooks/useWallet';
 import { WalletBalance } from '@/components/wallet/WalletBalance';
 import { WalletTransactions } from '@/components/wallet/WalletTransactions';
 import { SendForm } from '@/components/wallet/SendForm';
 import { ReceiveModal } from '@/components/wallet/ReceiveModal';
+import { Loader } from '@/components/ui/Loader';
 
 export default function WalletPage() {
+  const router = useRouter();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const { fetchBalance, fetchTransactions } = useWallet();
   const [showReceiveModal, setShowReceiveModal] = useState(false);
   const [showSendForm, setShowSendForm] = useState(false);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
     fetchBalance();
     fetchTransactions();
-  }, [fetchBalance, fetchTransactions]);
+  }, [isAuthenticated, router, fetchBalance, fetchTransactions]);
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader size="lg" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

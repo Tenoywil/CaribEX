@@ -5,11 +5,13 @@ import {
   selectCartTotal,
   selectCartItemCount,
 } from '@/redux/selectors/cartSelectors';
+import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';
 import Link from 'next/link';
 
 export const CartSummary = () => {
   const total = useSelector(selectCartTotal);
   const itemCount = useSelector(selectCartItemCount);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   const shipping = 5.0; // Flat shipping rate
   const tax = total * 0.1; // 10% tax
@@ -40,12 +42,21 @@ export const CartSummary = () => {
         </div>
       </div>
 
-      <Link
-        href="/checkout"
-        className="block w-full py-3 bg-blue-600 text-white text-center rounded-lg hover:bg-blue-700 font-semibold"
-      >
-        Proceed to Checkout
-      </Link>
+      {isAuthenticated ? (
+        <Link
+          href="/checkout"
+          className="block w-full py-3 bg-blue-600 text-white text-center rounded-lg hover:bg-blue-700 font-semibold"
+        >
+          Proceed to Checkout
+        </Link>
+      ) : (
+        <Link
+          href="/login"
+          className="block w-full py-3 bg-blue-600 text-white text-center rounded-lg hover:bg-blue-700 font-semibold"
+        >
+          Sign In to Checkout
+        </Link>
+      )}
 
       <Link
         href="/marketplace"

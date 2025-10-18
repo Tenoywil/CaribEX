@@ -31,7 +31,7 @@ export default function LoginPage() {
           <div className="mt-8 pt-6 border-t border-[#E5E7EB]">
             <p className="text-sm text-[#4B5563] text-center">
               New to crypto wallets?{' '}
-              <a href="#" className="text-[#0074F0] hover:underline">
+              <a href="/help" className="text-[#0074F0] hover:underline">
                 Learn how to get started
               </a>
             </p>
