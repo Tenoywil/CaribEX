@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide provides detailed information about the CaribX component library, including usage examples, props interfaces, and best practices.
+This guide provides detailed information about the CaribEX component library, including usage examples, props interfaces, and best practices.
 
 ---
 
@@ -623,4 +623,4 @@ export const ProductList = ({ products }: Props) => {
 
 ## Conclusion
 
-This component guide provides the foundation for building consistent, maintainable, and performant components in the CaribX application. Follow these patterns and best practices to ensure a high-quality codebase.
+This component guide provides the foundation for building consistent, maintainable, and performant components in the CaribEX application. Follow these patterns and best practices to ensure a high-quality codebase.

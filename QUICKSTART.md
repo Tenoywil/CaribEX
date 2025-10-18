@@ -1,6 +1,6 @@
-# CaribX - Quick Start Guide
+# CaribEX - Quick Start Guide
 
-Get up and running with CaribX in under 5 minutes!
+Get up and running with CaribEX in under 5 minutes!
 
 ## Prerequisites
 

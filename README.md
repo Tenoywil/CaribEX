@@ -1,6 +1,6 @@
-# CaribX — Blockchain Money Transfer & Marketplace
+# CaribEX — Blockchain Money Transfer & Marketplace
 
-**Project:** CaribX — Blockchain Money Transfer & Marketplace for Jamaica & the Caribbean  
+**Project:** CaribEX — Blockchain Money Transfer & Marketplace for Jamaica & the Caribbean  
 **Purpose:** Provide a fast, accessible, and secure web frontend that lets users connect wallets (SIWE), send/receive funds, browse and list products, manage carts/orders, and view wallet history.
 
 ---
@@ -178,8 +178,8 @@ npm run start
 ### Docker Deployment
 
 ```bash
-docker build -t caribx-frontend .
-docker run -p 3000:3000 caribx-frontend
+docker build -t CaribEX-frontend .
+docker run -p 3000:3000 CaribEX-frontend
 ```
 
 ---

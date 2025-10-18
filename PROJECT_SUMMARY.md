@@ -1,8 +1,8 @@
-# CaribX Frontend - Project Summary
+# CaribEX Frontend - Project Summary
 
 ## Overview
 
-This document provides a comprehensive overview of the CaribX frontend implementation, created based on the copilot instructions blueprint.
+This document provides a comprehensive overview of the CaribEX frontend implementation, created based on the copilot instructions blueprint.
 
 ---
 
@@ -367,7 +367,7 @@ Comprehensive documentation created:
 
 1. **Build Docker image:**
    ```bash
-   docker build -t caribx-frontend .
+   docker build -t CaribEX-frontend .
    ```
 
 2. **Run with Docker Compose:**
@@ -428,4 +428,4 @@ MIT License - See LICENSE file for details
 
 **Status:** ✅ **Complete and Ready for Development**
 
-The CaribX frontend scaffold is fully implemented according to the copilot instructions blueprint. All foundational files, configurations, and documentation are in place. The project is ready for feature development!
+The CaribEX frontend scaffold is fully implemented according to the copilot instructions blueprint. All foundational files, configurations, and documentation are in place. The project is ready for feature development!

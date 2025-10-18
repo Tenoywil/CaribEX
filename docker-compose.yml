@@ -14,36 +14,36 @@ services:
     depends_on:
       - backend
     networks:
-      - caribx-network
+      - CaribEX-network
 
   # Backend service (placeholder - configure based on actual backend)
   backend:
-    image: caribx-backend:latest
+    image: CaribEX-backend:latest
     ports:
       - "4000:4000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL:-postgresql://user:pass@db:5432/caribx}
+      - DATABASE_URL=${DATABASE_URL:-postgresql://user:pass@db:5432/CaribEX}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
     depends_on:
       - db
       - redis
     networks:
-      - caribx-network
+      - CaribEX-network
 
   # PostgreSQL Database
   db:
     image: postgres:15-alpine
     environment:
-      - POSTGRES_USER=${POSTGRES_USER:-caribx}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-caribxpassword}
-      - POSTGRES_DB=${POSTGRES_DB:-caribx}
+      - POSTGRES_USER=${POSTGRES_USER:-CaribEX}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-CaribEXpassword}
+      - POSTGRES_DB=${POSTGRES_DB:-CaribEX}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
-      - caribx-network
+      - CaribEX-network
 
   # Redis Cache
   redis:
@@ -53,10 +53,10 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - caribx-network
+      - CaribEX-network
 
 networks:
-  caribx-network:
+  CaribEX-network:
     driver: bridge
 
 volumes:

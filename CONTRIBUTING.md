@@ -1,6 +1,6 @@
-# Contributing to CaribX
+# Contributing to CaribEX
 
-Thank you for your interest in contributing to CaribX! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to CaribEX! This document provides guidelines and instructions for contributing to the project.
 
 ## Code of Conduct
 
@@ -194,4 +194,4 @@ Contributors will be recognized in:
 - Release notes
 - GitHub contributors page
 
-Thank you for contributing to CaribX! 🚀
+Thank you for contributing to CaribEX! 🚀

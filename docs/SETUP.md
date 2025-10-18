@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Before setting up the CaribX frontend, ensure you have the following installed:
+Before setting up the CaribEX frontend, ensure you have the following installed:
 
 - **Node.js**: Version 18 or higher
 - **npm**: Version 9 or higher (comes with Node.js)
@@ -188,10 +188,10 @@ npm run start
 
 ```bash
 # Staging
-NEXT_PUBLIC_API_URL=https://staging-api.caribx.com npm run build
+NEXT_PUBLIC_API_URL=https://staging-api.CaribEX.com npm run build
 
 # Production
-NEXT_PUBLIC_API_URL=https://api.caribx.com npm run build
+NEXT_PUBLIC_API_URL=https://api.CaribEX.com npm run build
 ```
 
 ---
@@ -201,7 +201,7 @@ NEXT_PUBLIC_API_URL=https://api.caribx.com npm run build
 ### Build Docker Image
 
 ```bash
-docker build -t caribx-frontend .
+docker build -t CaribEX-frontend .
 ```
 
 ### Run Docker Container
@@ -209,7 +209,7 @@ docker build -t caribx-frontend .
 ```bash
 docker run -p 3000:3000 \
   -e NEXT_PUBLIC_API_URL=http://localhost:4000 \
-  caribx-frontend
+  CaribEX-frontend
 ```
 
 ### Docker Compose
@@ -230,11 +230,11 @@ services:
       - backend
 
   backend:
-    image: caribx-backend:latest
+    image: CaribEX-backend:latest
     ports:
       - "4000:4000"
     environment:
-      - DATABASE_URL=postgresql://user:pass@db:5432/caribx
+      - DATABASE_URL=postgresql://user:pass@db:5432/CaribEX
     depends_on:
       - db
 
@@ -243,7 +243,7 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=pass
-      - POSTGRES_DB=caribx
+      - POSTGRES_DB=CaribEX
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

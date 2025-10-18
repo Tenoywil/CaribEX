@@ -1,8 +1,8 @@
-# CaribX Architecture Guide
+# CaribEX Architecture Guide
 
 ## Overview
 
-CaribX is a Next.js 15 application built with TypeScript, Redux Toolkit, and Redux-Saga. This document provides a detailed overview of the application architecture, design patterns, and technical decisions.
+CaribEX is a Next.js 15 application built with TypeScript, Redux Toolkit, and Redux-Saga. This document provides a detailed overview of the application architecture, design patterns, and technical decisions.
 
 ---
 

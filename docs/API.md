@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the backend API integration for the CaribX frontend application. The API follows RESTful conventions and uses JSON for request/response payloads.
+This document describes the backend API integration for the CaribEX frontend application. The API follows RESTful conventions and uses JSON for request/response payloads.
 
 ---
 
@@ -57,7 +57,7 @@ POST /v1/auth/siwe
 ```json
 {
   "signature": "0x...",
-  "message": "Sign in to CaribX..."
+  "message": "Sign in to CaribEX..."
 }
 ```
 
@@ -627,4 +627,4 @@ test('fetches products', async () => {
 
 ## Conclusion
 
-This API integration guide provides all the necessary endpoints and patterns for building the CaribX frontend. Follow RESTful conventions and handle errors gracefully for the best user experience.
+This API integration guide provides all the necessary endpoints and patterns for building the CaribEX frontend. Follow RESTful conventions and handle errors gracefully for the best user experience.

@@ -1,4 +1,4 @@
-// Core domain types for CaribX
+// Core domain types for CaribEX
 
 export interface User {
   id: string;
