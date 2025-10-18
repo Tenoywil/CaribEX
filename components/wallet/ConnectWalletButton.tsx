@@ -1,21 +1,81 @@
 'use client';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
+import { useEffect, useState } from 'react';
 import { selectIsAuthenticated, selectUser } from '@/redux/selectors/authSelectors';
-import { logout } from '@/redux/reducers/authReducer';
+import { logout, loginRequest } from '@/redux/reducers/authReducer';
+import { apiClient } from '@/lib/apiClient';
+import { SiweMessage } from 'siwe';
 
 export const ConnectWalletButton = () => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const user = useSelector(selectUser);
+  
+  const { address, isConnected } = useAccount();
+  const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect();
+  const { signMessageAsync } = useSignMessage();
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // When wallet connects, trigger SIWE authentication
+  useEffect(() => {
+    if (isConnected && address && !isAuthenticated) {
+      handleSIWEAuth();
+    }
+  }, [isConnected, address, isAuthenticated]);
+
+  const handleSIWEAuth = async () => {
+    if (!address) return;
+    
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Step 1: Get nonce from backend
+      const { nonce } = await apiClient.get<{ nonce: string }>('/v1/auth/nonce');
+
+      // Step 2: Create SIWE message
+      const message = new SiweMessage({
+        domain: window.location.host,
+        address,
+        statement: 'Sign in to CaribEX with your Ethereum wallet',
+        uri: window.location.origin,
+        version: '1',
+        chainId: 1, // Use the appropriate chain ID
+        nonce,
+      });
+
+      const messageString = message.prepareMessage();
+
+      // Step 3: Sign the message with wallet
+      const signature = await signMessageAsync({ message: messageString });
+
+      // Step 4: Send signature to backend for verification
+      dispatch(loginRequest({ signature, message: messageString }));
+    } catch (err: any) {
+      console.error('SIWE authentication error:', err);
+      setError(err.message || 'Authentication failed');
+      disconnect();
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleConnect = async () => {
-    // This would trigger the SIWE flow
-    // For now, it's a placeholder
-    console.log('Connect wallet clicked');
+    setError(null);
+    // Connect with the first available connector (usually MetaMask/injected)
+    const connector = connectors[0];
+    if (connector) {
+      connect({ connector });
+    }
   };
 
   const handleDisconnect = () => {
+    disconnect();
     dispatch(logout());
   };
 
@@ -39,11 +99,17 @@ export const ConnectWalletButton = () => {
   }
 
   return (
-    <button
-      onClick={handleConnect}
-      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
-    >
-      Connect Wallet
-    </button>
+    <div className="flex flex-col items-center gap-2">
+      <button
+        onClick={handleConnect}
+        disabled={isLoading}
+        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isLoading ? 'Connecting...' : 'Connect Wallet'}
+      </button>
+      {error && (
+        <p className="text-sm text-red-600">{error}</p>
+      )}
+    </div>
   );
 };

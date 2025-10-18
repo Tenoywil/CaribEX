@@ -29,12 +29,17 @@ class ApiClient {
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          // Handle unauthorized - redirect to login
-          if (typeof window !== 'undefined') {
+          // Handle unauthorized - redirect to login only if not already on login page
+          if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+            // Clear any stale auth state
+            localStorage.removeItem('auth_state');
             window.location.href = '/login';
           }
         }
-        return Promise.reject(error);
+        
+        // Return structured error
+        const errorMessage = error.response?.data?.error?.message || error.message || 'An error occurred';
+        return Promise.reject(new Error(errorMessage));
       }
     );
   }

@@ -13,7 +13,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    loginRequest: (state) => {
+    loginRequest: (state, action: PayloadAction<{ signature: string; message: string }>) => {
       state.loading = true;
       state.error = null;
     },
@@ -39,8 +39,15 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
+    restoreSession: (state, action: PayloadAction<{ user: User; session: Session }>) => {
+      state.user = action.payload.user;
+      state.session = action.payload.session;
+      state.isAuthenticated = true;
+      state.loading = false;
+      state.error = null;
+    },
   },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, logout, clearError } = authSlice.actions;
+export const { loginRequest, loginSuccess, loginFailure, logout, clearError, restoreSession } = authSlice.actions;
 export const authReducer = authSlice.reducer;

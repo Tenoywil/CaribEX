@@ -18,6 +18,10 @@
 # Install dependencies
 npm install
 
+# Install additional SIWE dependencies (required)
+yarn add @tanstack/react-query siwe viem@2.x
+# or with npm: npm install @tanstack/react-query siwe viem@2.x
+
 # Set up environment variables
 cp .env.example .env.local
 # Edit .env.local with your configuration
@@ -27,6 +31,8 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
+
+**📖 SIWE Setup:** See [SIWE_SETUP_INSTRUCTIONS.md](./SIWE_SETUP_INSTRUCTIONS.md) for complete authentication setup.
 
 ---
 
@@ -85,9 +91,12 @@ The application uses **Redux Toolkit** with **Redux-Saga** for state management:
 ### Key Features
 
 #### 🔐 Authentication (SIWE)
-- Sign-In With Ethereum (SIWE) wallet authentication
-- Nonce-based signature verification
+- Sign-In With Ethereum (SIWE) wallet authentication ✅ **Fully Implemented**
+- Nonce-based signature verification (prevents replay attacks)
 - Session management with HTTP-only cookies
+- Support for MetaMask, Coinbase Wallet, WalletConnect
+- Automatic session restoration on page load
+- See [SIWE_IMPLEMENTATION.md](./docs/SIWE_IMPLEMENTATION.md) for details
 
 #### 💰 Wallet Operations
 - View balance and transaction history
@@ -186,6 +195,9 @@ docker run -p 3000:3000 CaribEX-frontend
 
 ## 📚 Additional Documentation
 
+- [SIWE Setup Instructions](./SIWE_SETUP_INSTRUCTIONS.md) - Quick start for SIWE authentication
+- [SIWE Implementation Guide](./docs/SIWE_IMPLEMENTATION.md) - Complete SIWE documentation
+- [Implementation Summary](./IMPLEMENTATION_SUMMARY.md) - Overview of what was implemented
 - [Architecture Guide](./docs/ARCHITECTURE.md) - Detailed architecture documentation
 - [API Integration](./docs/API.md) - Backend API integration guide
 - [Setup Guide](./docs/SETUP.md) - Detailed setup instructions
