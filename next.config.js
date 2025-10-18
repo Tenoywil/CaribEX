@@ -4,6 +4,7 @@ const nextConfig = {
   images: {
     domains: ['localhost'],
   },
+  output: 'standalone',
   experimental: {
     // Enable experimental features if needed
   },
