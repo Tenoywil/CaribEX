@@ -19,7 +19,7 @@ class CacheClient {
   get<T>(key: string): T | null {
     const entry = this.cache.get(key);
     
-    if (!entry) {
+    if (entry === undefined) {
       return null;
     }
 
@@ -56,7 +56,7 @@ class CacheClient {
    * @param pattern Pattern to match (e.g., 'products:')
    */
   clear(pattern?: string): void {
-    if (!pattern) {
+    if (pattern === undefined) {
       this.cache.clear();
       return;
     }
@@ -77,8 +77,8 @@ class CacheClient {
    */
   has(key: string): boolean {
     const entry = this.cache.get(key);
-    if (!entry) return false;
-    
+    if (entry === undefined) return false;
+
     if (Date.now() > entry.expiresAt) {
       this.cache.delete(key);
       return false;
