@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest, takeEvery } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import {
   addToCartRequest,
@@ -7,6 +7,7 @@ import {
   removeFromCartRequest,
   removeFromCartSuccess,
   removeFromCartFailure,
+  updateCartItemQty,
   setCartId,
 } from '../reducers/cartReducer';
 import { apiClient } from '@/lib/apiClient';
@@ -51,8 +52,25 @@ function* handleRemoveFromCart(action: PayloadAction<string>) {
   }
 }
 
+// Worker saga: update cart item quantity
+function* handleUpdateCartItemQty(action: PayloadAction<{ id: string; qty: number }>) {
+  try {
+    const { id, qty } = action.payload;
+
+    // Call API to update quantity
+    yield call(apiClient.patch, `/v1/cart/items/${id}`, { qty });
+
+    // The reducer already updated the state optimistically
+  } catch (error: any) {
+    // On error, we could revert the optimistic update
+    // For now, just log the error
+    console.error('Failed to update cart item quantity:', error);
+  }
+}
+
 // Watcher saga
 export default function* cartSaga() {
   yield takeLatest(addToCartRequest.type, handleAddToCart);
   yield takeLatest(removeFromCartRequest.type, handleRemoveFromCart);
+  yield takeEvery(updateCartItemQty.type, handleUpdateCartItemQty);
 }

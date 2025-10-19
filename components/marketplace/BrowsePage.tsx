@@ -10,10 +10,12 @@ import {
   selectProductsLoading,
   selectProductsListMeta,
 } from '@/redux/selectors/productsSelectors';
+import { selectCartLoading, selectCartError } from '@/redux/selectors/cartSelectors';
 import { ProductCard } from './ProductCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { Loader } from '@/components/ui/Loader';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { useToast } from '@/components/ui/ToastContainer';
 
 export const BrowsePage = () => {
   const dispatch = useDispatch();
@@ -22,6 +24,9 @@ export const BrowsePage = () => {
   const products = useSelector(selectAllProducts);
   const loading = useSelector(selectProductsLoading);
   const listMeta = useSelector(selectProductsListMeta);
+  const cartLoading = useSelector(selectCartLoading);
+  const cartError = useSelector(selectCartError);
+  const { showToast } = useToast();
 
   // Initialize state from URL params
   const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page') || '1'));
@@ -61,18 +66,38 @@ export const BrowsePage = () => {
     }
   }, [currentPage, dispatch]);
 
+  // Show toast when cart error occurs
+  useEffect(() => {
+    if (cartError) {
+      showToast(cartError, 'error');
+    }
+  }, [cartError, showToast]);
+
 
   const handleAddToCart = (productId: string) => {
     const product = products.find((p) => p.id === productId);
-    if (product) {
-      dispatch(
-        addToCartRequest({
-          productId,
-          qty: 1,
-          price: product.price,
-        })
-      );
+    if (!product) {
+      showToast('Product not found', 'error');
+      return;
     }
+    
+    if (product.stock <= 0) {
+      showToast('This product is out of stock', 'warning');
+      return;
+    }
+
+    if (cartLoading) {
+      return; // Prevent multiple rapid clicks
+    }
+
+    dispatch(
+      addToCartRequest({
+        productId,
+        qty: 1,
+        price: product.price,
+      })
+    );
+    showToast(`${product.title} added to cart!`, 'success');
   };
 
   const handlePageChange = (page: number) => {
@@ -356,6 +381,7 @@ export const BrowsePage = () => {
                     product={product}
                     onAddToCart={handleAddToCart}
                     viewMode={viewMode}
+                    disabled={cartLoading}
                   />
                 </div>
               ))}

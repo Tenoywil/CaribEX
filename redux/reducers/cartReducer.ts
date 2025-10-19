@@ -31,6 +31,7 @@ const cartSlice = createSlice({
       }
       state.total = state.items.reduce((sum, item) => sum + item.price * item.qty, 0);
       state.loading = false;
+      state.error = null;
     },
     addToCartFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
@@ -44,6 +45,7 @@ const cartSlice = createSlice({
       state.items = state.items.filter((item) => item.id !== action.payload);
       state.total = state.items.reduce((sum, item) => sum + item.price * item.qty, 0);
       state.loading = false;
+      state.error = null;
     },
     removeFromCartFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;

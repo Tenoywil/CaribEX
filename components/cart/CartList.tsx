@@ -1,23 +1,41 @@
 'use client';
 
 import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 import {
   selectCartItems,
   selectCartTotal,
+  selectCartError,
+  selectCartLoading,
 } from '@/redux/selectors/cartSelectors';
 import {
   removeFromCartRequest,
   updateCartItemQty,
 } from '@/redux/reducers/cartReducer';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { useToast } from '@/components/ui/ToastContainer';
 
 export const CartList = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
   const total = useSelector(selectCartTotal);
+  const cartError = useSelector(selectCartError);
+  const cartLoading = useSelector(selectCartLoading);
+  const { showToast } = useToast();
+
+  // Show toast when cart error occurs
+  useEffect(() => {
+    if (cartError) {
+      showToast(cartError, 'error');
+    }
+  }, [cartError, showToast]);
 
   const handleRemove = (itemId: string) => {
+    if (cartLoading) {
+      return; // Prevent multiple rapid clicks
+    }
     dispatch(removeFromCartRequest(itemId));
+    showToast('Item removed from cart', 'success');
   };
 
   const handleQuantityChange = (itemId: string, newQty: number) => {
@@ -63,15 +81,16 @@ export const CartList = () => {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => handleQuantityChange(item.id, item.qty - 1)}
-                className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50"
-                disabled={item.qty <= 1}
+                className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={item.qty <= 1 || cartLoading}
               >
                 -
               </button>
               <span className="w-12 text-center font-semibold">{item.qty}</span>
               <button
                 onClick={() => handleQuantityChange(item.id, item.qty + 1)}
-                className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50"
+                className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={cartLoading}
               >
                 +
               </button>
@@ -83,7 +102,8 @@ export const CartList = () => {
 
             <button
               onClick={() => handleRemove(item.id)}
-              className="text-red-600 hover:text-red-700 text-sm"
+              className="text-red-600 hover:text-red-700 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={cartLoading}
             >
               Remove
             </button>

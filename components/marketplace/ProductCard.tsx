@@ -8,17 +8,21 @@ interface ProductCardProps {
   product: Product;
   onAddToCart: (productId: string) => void;
   viewMode?: 'grid' | 'list';
+  disabled?: boolean;
 }
 
 export const ProductCard = ({
   product,
   onAddToCart,
   viewMode = 'grid',
+  disabled = false,
 }: ProductCardProps) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onAddToCart(product.id);
+    if (!disabled && product.stock > 0) {
+      onAddToCart(product.id);
+    }
   };
 
   const isLowStock = product.stock > 0 && product.stock <= 5;
@@ -102,9 +106,10 @@ export const ProductCard = ({
                 {product.stock > 0 ? (
                   <button
                     onClick={handleAddToCart}
-                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                    disabled={disabled}
+                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 font-semibold shadow-lg hover:shadow-xl transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                   >
-                    Add to Cart
+                    {disabled ? 'Adding...' : 'Add to Cart'}
                   </button>
                 ) : (
                   <span className="text-sm text-red-600 font-semibold bg-red-50 px-4 py-2 rounded-lg">
@@ -170,9 +175,10 @@ export const ProductCard = ({
           <div className="absolute inset-x-0 bottom-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <button
               onClick={handleAddToCart}
-              className="w-full py-2 bg-white text-blue-600 rounded-lg font-semibold shadow-lg hover:bg-blue-50 transition-colors"
+              disabled={disabled || product.stock === 0}
+              className="w-full py-2 bg-white text-blue-600 rounded-lg font-semibold shadow-lg hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Quick Add
+              {disabled ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Quick Add'}
             </button>
           </div>
         </div>
@@ -207,9 +213,10 @@ export const ProductCard = ({
                 </span>
                 <button
                   onClick={handleAddToCart}
-                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 text-sm font-semibold shadow-md hover:shadow-lg transition-all transform hover:scale-105"
+                  disabled={disabled}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 text-sm font-semibold shadow-md hover:shadow-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                 >
-                  Add to Cart
+                  {disabled ? 'Adding...' : 'Add to Cart'}
                 </button>
               </div>
             ) : (
