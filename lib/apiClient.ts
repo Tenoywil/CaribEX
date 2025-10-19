@@ -36,7 +36,7 @@ class ApiClient {
             window.location.href = '/login';
           }
         }
-        
+
         // Return structured error
         const errorMessage = error.response?.data?.error?.message || error.message || 'An error occurred';
         return Promise.reject(new Error(errorMessage));
