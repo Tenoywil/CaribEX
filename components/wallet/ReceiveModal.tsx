@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
+import { QRCode } from "antd"
 
 interface ReceiveModalProps {
   isOpen: boolean;
@@ -47,7 +48,7 @@ export const ReceiveModal = ({ isOpen, onClose }: ReceiveModalProps) => {
             {/* QR Code Placeholder */}
             <div className="flex justify-center">
               <div className="w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                <span className="text-gray-500 text-sm">QR Code</span>
+                <QRCode value={walletAddress} />
               </div>
             </div>
 
