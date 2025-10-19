@@ -34,7 +34,7 @@ export const ProductDetails = ({ product, onAddToCart }: ProductDetailsProps) =>
               <>
                 <img
                   src={product.images[selectedImage]}
-                  alt={product.name}
+                  alt={product.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -74,7 +74,7 @@ export const ProductDetails = ({ product, onAddToCart }: ProductDetailsProps) =>
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  <img src={image} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
+                  <img src={image} alt={`${product.title} ${idx + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
@@ -95,7 +95,7 @@ export const ProductDetails = ({ product, onAddToCart }: ProductDetailsProps) =>
 
           {/* Product Name */}
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 leading-tight">
-            {product.name}
+            {product.title}
           </h1>
 
           {/* Price */}

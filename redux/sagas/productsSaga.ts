@@ -21,14 +21,14 @@ function* handleFetchProducts(action: PayloadAction<{ page?: number; limit?: num
 
     // Check L1 cache first
     const cached = cacheClient.get(cacheKey);
-    if (cached) {
-      yield put(fetchProductsSuccess(cached));
+    if (cached !== undefined && cached !== null && Object.values(cached as { products: Product[]; page: number; total: number }).length > 0) {
+      yield put(fetchProductsSuccess(cached as { products: Product[]; page: number; total: number }));
       return;
     }
 
     // Fetch from API
     const response: { products: Product[]; page: number; total: number } = yield call(
-      apiClient.get,
+      [apiClient, 'get'],
       `/v1/products?page=${page}&limit=${limit}`
     );
 
@@ -49,13 +49,13 @@ function* handleFetchProductById(action: PayloadAction<string>) {
 
     // Check L1 cache
     const cached = cacheClient.get(cacheKey);
-    if (cached) {
-      yield put(fetchProductByIdSuccess(cached));
+    if (cached !== undefined && cached !== null && Object.values(cached as Product).length > 0) {
+      yield put(fetchProductByIdSuccess(cached as Product));
       return;
     }
 
     // Fetch from API
-    const product: Product = yield call(apiClient.get, `/v1/products/${productId}`);
+    const product: Product = yield call([apiClient, 'get'], `/v1/products/${productId}`);
 
     // Store in L1 cache
     cacheClient.set(cacheKey, product, 300);
@@ -78,7 +78,7 @@ function* handleInvalidateProducts() {
     });
 
     // Refetch current page
-    const currentPage = yield select((state: any) => state.products.listMeta.page);
+    const currentPage: number = yield select((state: any) => state.products.listMeta.page);
     yield put(fetchProductsRequest({ page: currentPage }));
   } catch (error) {
     console.error('Cache invalidation error:', error);

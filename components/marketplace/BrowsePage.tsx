@@ -29,8 +29,11 @@ export const BrowsePage = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
 
   useEffect(() => {
-    dispatch(fetchProductsRequest({ page: currentPage, limit: 20 }));
-  }, [currentPage, dispatch]);
+    if(currentPage >= 1 && currentPage){
+      dispatch(fetchProductsRequest({ page: currentPage, limit: 20 }));
+    }
+  }, [currentPage]);
+
 
   const handleAddToCart = (productId: string) => {
     const product = products.find((p) => p.id === productId);
@@ -64,7 +67,8 @@ export const BrowsePage = () => {
   // Filter and sort products
   const filteredProducts = products
     .filter((p) => {
-      const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      if (!searchTerm) return true;
+      const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            p.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = !category || p.category === category;
       const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
