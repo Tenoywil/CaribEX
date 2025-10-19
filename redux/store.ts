@@ -4,6 +4,7 @@ import { authReducer } from './reducers/authReducer';
 import { productsReducer } from './reducers/productsReducer';
 import { cartReducer } from './reducers/cartReducer';
 import { walletReducer } from './reducers/walletReducer';
+import { sellerReducer } from './reducers/sellerReducer';
 import rootSaga from './sagas';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -14,6 +15,7 @@ export const store = configureStore({
     products: productsReducer,
     cart: cartReducer,
     wallet: walletReducer,
+    seller: sellerReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

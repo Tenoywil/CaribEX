@@ -11,8 +11,8 @@ export default function SellersPage() {
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
-      // Navigate to seller dashboard or product creation
-      router.push('/marketplace');
+      // Navigate to product creation page
+      router.push('/seller/create');
     } else {
       router.push('/login');
     }
