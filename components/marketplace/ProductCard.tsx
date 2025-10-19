@@ -20,12 +20,12 @@ export const ProductCard = ({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!disabled && (product.quantity ?? 0) > 0) {
+    if (!disabled && (product.stock ?? 0) > 0) {
       onAddToCart(product.id);
     }
   };
 
-  const isLowStock = (product.quantity ?? 0) > 0 && (product.quantity ?? 0) <= 5;
+  const isLowStock = (product.stock ?? 0) > 0 && (product.stock ?? 0) <= 5;
   const isNew =
     new Date(product.createdAt) >
     new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -97,13 +97,13 @@ export const ProductCard = ({
                     ETH {product.price.toFixed(2)}
                   </span>
                   <p className="text-sm text-gray-500 mt-1">
-                    {(product.quantity ?? 0) > 0
-                      ? `${(product.quantity ?? 0)} in stock`
+                    {(product.stock ?? 0) > 0
+                      ? `${(product.stock ?? 0)} in stock`
                       : 'Out of stock'}
                   </p>
                 </div>
 
-                {(product.quantity ?? 0) > 0 ? (
+                {(product.stock ?? 0) > 0 ? (
                   <button
                     onClick={handleAddToCart}
                     disabled={disabled}
@@ -175,12 +175,12 @@ export const ProductCard = ({
           <div className="absolute inset-x-0 bottom-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <button
               onClick={handleAddToCart}
-              disabled={disabled || (product.quantity ?? 0) === 0}
+              disabled={disabled || (product.stock ?? 0) === 0}
               className="w-full py-2 bg-white text-blue-600 rounded-lg font-semibold shadow-lg hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {disabled
                 ? 'Adding...'
-                : (product.quantity ?? 0) === 0
+                : (product.stock ?? 0) === 0
                   ? 'Out of Stock'
                   : 'Quick Add'}
             </button>
@@ -210,10 +210,10 @@ export const ProductCard = ({
               </span>
             </div>
 
-            {(product.quantity ?? 0) > 0 ? (
+            {(product.stock ?? 0) > 0 ? (
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500">
-                  {(product.quantity ?? 0)} in stock
+                  {(product.stock ?? 0)} in stock
                 </span>
                 <button
                   onClick={handleAddToCart}
