@@ -64,7 +64,7 @@ export const Header = () => {
                   Orders
                 </Link>
                 <Link 
-                  href="/sellers" 
+                  href="/seller/dashboard" 
                   className="text-[#4B5563] hover:text-[#0074F0] font-medium transition-colors"
                 >
                   Sell
@@ -214,7 +214,7 @@ export const Header = () => {
                     Orders
                   </Link>
                   <Link
-                    href="/sellers"
+                    href="/seller/dashboard"
                     className="text-gray-700 hover:text-blue-600 font-medium py-2"
                     onClick={() => setShowMobileMenu(false)}
                   >
