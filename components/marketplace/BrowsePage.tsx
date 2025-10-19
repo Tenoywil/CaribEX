@@ -131,7 +131,7 @@ export const BrowsePage = () => {
   // Filter and sort products
   const filteredProducts = products
     .filter((p) => {
-      if (searchTerm === undefined) {
+      if (searchTerm === undefined || searchTerm === '') {
         return p;
       }
 
