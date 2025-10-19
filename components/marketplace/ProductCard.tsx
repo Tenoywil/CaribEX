@@ -29,7 +29,7 @@ export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: Product
               {product.images && product.images[0] ? (
                 <img
                   src={product.images[0]}
-                  alt={product.name}
+                  alt={product.title}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -59,7 +59,7 @@ export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: Product
               <div>
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
-                    {product.name}
+                    {product.title}
                   </h3>
                   <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full ml-4">
                     {product.category}
@@ -110,7 +110,7 @@ export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: Product
             <>
               <img
                 src={product.images[0]}
-                alt={product.name}
+                alt={product.title}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -152,12 +152,12 @@ export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: Product
         <div className="p-4 flex-1 flex flex-col">
           <div className="mb-2">
             <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-              {product.category}
+              {product.category ?? " Uncategorized"}
             </span>
           </div>
 
           <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-            {product.name}
+            {product.title}
           </h3>
 
           <p className="text-sm text-gray-600 mb-4 line-clamp-2 flex-1">
