@@ -1,8 +1,24 @@
 'use client';
 
 import { ConnectWalletButton } from '@/components/wallet/ConnectWalletButton';
+import { useRouter } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';
+import { useEffect } from 'react';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    if (isAuthenticated) {
+      router.push('/wallet');
+    }
+  }, [isAuthenticated, router]);
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
       <div className="max-w-md w-full mx-4">
