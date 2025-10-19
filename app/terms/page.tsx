@@ -30,7 +30,7 @@ export default function TermsPage() {
               <li>In any way that violates any applicable law or regulation</li>
               <li>To transmit any unauthorized or unsolicited advertising</li>
               <li>To impersonate or attempt to impersonate another user</li>
-              <li>To engage in any conduct that restricts or inhibits anyone's use of the service</li>
+              <li>To engage in any conduct that restricts or inhibits anyone&apos;s use of the service</li>
             </ul>
           </div>
 

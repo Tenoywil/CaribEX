@@ -2,6 +2,7 @@
 
 import { Product } from '@/types';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface ProductCardProps {
   product: Product;
@@ -9,7 +10,11 @@ interface ProductCardProps {
   viewMode?: 'grid' | 'list';
 }
 
-export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: ProductCardProps) => {
+export const ProductCard = ({
+  product,
+  onAddToCart,
+  viewMode = 'grid',
+}: ProductCardProps) => {
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -17,7 +22,9 @@ export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: Product
   };
 
   const isLowStock = product.stock > 0 && product.stock <= 5;
-  const isNew = new Date(product.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const isNew =
+    new Date(product.createdAt) >
+    new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
   if (viewMode === 'list') {
     return (
@@ -27,15 +34,25 @@ export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: Product
             {/* Image */}
             <div className="sm:w-64 h-48 sm:h-auto bg-gradient-to-br from-gray-100 to-gray-200 relative flex-shrink-0">
               {product.images && product.images[0] ? (
-                <img
+                <Image
                   src={product.images[0]}
                   alt={product.title}
+                  fill
+                  loading="lazy"
                   className="w-full h-full object-cover"
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">
-                  <svg className="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                  <svg
+                    className="w-16 h-16"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               )}
@@ -76,7 +93,9 @@ export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: Product
                     {product.currency} {product.price.toFixed(2)}
                   </span>
                   <p className="text-sm text-gray-500 mt-1">
-                    {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+                    {product.stock > 0
+                      ? `${product.stock} in stock`
+                      : 'Out of stock'}
                   </p>
                 </div>
 
@@ -108,21 +127,31 @@ export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: Product
         <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 relative overflow-hidden">
           {product.images && product.images[0] ? (
             <>
-              <img
+              <Image
                 src={product.images[0]}
                 alt={product.title}
+                fill
+                loading="lazy"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </>
           ) : (
             <div className="w-full h-full flex items-center justify-center text-gray-400">
-              <svg className="w-20 h-20" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+              <svg
+                className="w-20 h-20"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
           )}
-          
+
           {/* Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2">
             {isNew && (
@@ -152,7 +181,7 @@ export const ProductCard = ({ product, onAddToCart, viewMode = 'grid' }: Product
         <div className="p-4 flex-1 flex flex-col">
           <div className="mb-2">
             <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-              {product.category ?? " Uncategorized"}
+              {product.category ?? ' Uncategorized'}
             </span>
           </div>
 

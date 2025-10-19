@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';

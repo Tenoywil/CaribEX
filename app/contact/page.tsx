@@ -31,7 +31,7 @@ export default function ContactPage() {
 
         <div className="card mb-8">
           <p className="text-[#4B5563] text-center mb-6">
-            Have a question or need support? Send us a message and we'll get back to you as soon as possible.
+            Have a question or need support? Send us a message and we&apos;ll get back to you as soon as possible.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">

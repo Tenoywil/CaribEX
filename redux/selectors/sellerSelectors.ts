@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { RootState } from '@/types';
 
 // Base selector
-const selectSellerState = (state: RootState & { seller: any }) => state.seller;
+const selectSellerState = (state: RootState & { seller: unknown }) => state.seller;
 
 // Memoized selectors
 export const selectMyProducts = createSelector(
