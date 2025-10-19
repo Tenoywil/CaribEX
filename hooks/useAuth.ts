@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIsAuthenticated, selectAuthLoading, selectSession } from '@/redux/selectors/authSelectors';
-import { restoreSession, logout } from '@/redux/reducers/authReducer';
+import {
+  selectIsAuthenticated,
+  selectAuthLoading,
+  selectSession,
+  selectIsCheckingSession
+} from '@/redux/selectors/authSelectors';
+import { restoreSession, logout, checkSessionRequest, checkSessionComplete } from '@/redux/reducers/authReducer';
 import { apiClient } from '@/lib/apiClient';
+import type { Session,User } from '@/types';
+
 
 const SESSION_STORAGE_KEY = 'caribex_session_backup';
 
@@ -17,6 +24,7 @@ export const useAuth = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isLoading = useSelector(selectAuthLoading);
   const session = useSelector(selectSession);
+  const isCheckingSession = useSelector(selectIsCheckingSession);
   const [sessionChecked, setSessionChecked] = useState(false);
 
   // Check session on mount
@@ -55,31 +63,39 @@ export const useAuth = () => {
   };
 
   const checkSession = async () => {
+    // Don't check again if already authenticated
+    if (isAuthenticated) {
+      dispatch(checkSessionComplete());
+      return;
+    }
+
+    dispatch(checkSessionRequest());
+
     try {
       // First, check if we have a backup session in localStorage
       const storedSession = localStorage.getItem(SESSION_STORAGE_KEY);
       if (storedSession) {
         const sessionData = JSON.parse(storedSession);
-        
+
         // If the stored session is expired, clear it and don't attempt restore
         if (isSessionExpired(sessionData.expiresAt)) {
           localStorage.removeItem(SESSION_STORAGE_KEY);
           setSessionChecked(true);
+          dispatch(checkSessionComplete());
           return;
         }
       }
-
+ 
       // Try to get current user from backend (will use HTTP-only cookie)
-      const response = await apiClient.get('/v1/auth/me');
-      
-      if (response.user && response.session) {
+      const response = await apiClient.get<{ user: User; session: Session }>('/v1/auth/me');
+
+      if (response.user) {
         // Verify session hasn't expired
-        if (!isSessionExpired(response.session.expiresAt)) {
-          dispatch(restoreSession(response));
-        } else {
-          // Session expired, logout
-          dispatch(logout());
-        }
+        dispatch(restoreSession(response as { user: User; session: Session}));
+      } else {
+        // Session expired, logout
+        dispatch(logout());
+
       }
     } catch (error) {
       // Session doesn't exist or is invalid - user needs to login
@@ -90,6 +106,7 @@ export const useAuth = () => {
       } catch (e) {
         // Ignore localStorage errors
       }
+      dispatch(checkSessionComplete());
     } finally {
       setSessionChecked(true);
     }
@@ -98,6 +115,6 @@ export const useAuth = () => {
   return {
     isAuthenticated,
     isLoading,
-    sessionChecked,
+    isCheckingSession,
   };
 };

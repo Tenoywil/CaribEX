@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';
+import { selectIsAuthenticated, selectIsCheckingSession } from '@/redux/selectors/authSelectors';
 import { useWallet } from '@/hooks/useWallet';
 import { WalletBalance } from '@/components/wallet/WalletBalance';
 import { WalletTransactions } from '@/components/wallet/WalletTransactions';
@@ -14,20 +14,27 @@ import { Loader } from '@/components/ui/Loader';
 export default function WalletPage() {
   const router = useRouter();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isCheckingSession = useSelector(selectIsCheckingSession);
   const { fetchBalance, fetchTransactions } = useWallet();
   const [showReceiveModal, setShowReceiveModal] = useState(false);
   const [showSendForm, setShowSendForm] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    // Wait for session check to complete before redirecting
+    if (!isCheckingSession && !isAuthenticated) {
       router.push('/login');
       return;
     }
-    fetchBalance();
-    fetchTransactions();
-  }, [isAuthenticated, router, fetchBalance, fetchTransactions]);
+    
+    // Fetch wallet data once authenticated
+    if (isAuthenticated && !isCheckingSession) {
+      fetchBalance();
+      fetchTransactions();
+    }
+  }, [isAuthenticated, isCheckingSession, router, fetchBalance, fetchTransactions]);
 
-  if (!isAuthenticated) {
+  // Show loading state while checking session or if not authenticated
+  if (isCheckingSession || !isAuthenticated) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader size="lg" />

@@ -2,11 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';
+import { selectIsAuthenticated, selectIsCheckingSession } from '@/redux/selectors/authSelectors';
 
 export default function SellersPage() {
   const router = useRouter();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isCheckingSession = useSelector(selectIsCheckingSession);
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
@@ -71,15 +72,18 @@ export default function SellersPage() {
             Ready to Start Selling?
           </h2>
           <p className="text-lg text-[#4B5563] mb-8 max-w-2xl mx-auto">
-            {isAuthenticated 
-              ? 'Create your first product listing and start selling today!'
-              : 'Connect your wallet to get started as a seller on CaribEX'}
+            {isCheckingSession 
+              ? 'Loading...'
+              : isAuthenticated 
+                ? 'Create your first product listing and start selling today!'
+                : 'Connect your wallet to get started as a seller on CaribEX'}
           </p>
           <button
             onClick={handleGetStarted}
-            className="btn-primary inline-block"
+            disabled={isCheckingSession}
+            className="btn-primary inline-block disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isAuthenticated ? 'Create Listing' : 'Connect Wallet to Start'}
+            {isCheckingSession ? 'Loading...' : isAuthenticated ? 'Create Listing' : 'Connect Wallet to Start'}
           </button>
         </div>
       </section>
