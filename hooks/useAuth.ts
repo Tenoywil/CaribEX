@@ -19,9 +19,7 @@ export const useAuth = () => {
 
   useEffect(() => {
     // Only check once on mount
-    if (isAuthenticated) return;
-
-    // immediately check session
+    // Always check session on mount, regardless of authentication state
     new Promise(() => checkSession());
     
   }, [isAuthenticated]);
