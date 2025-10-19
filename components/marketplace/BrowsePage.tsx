@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { fetchProductsRequest } from '@/redux/reducers/productsReducer';
 import { addToCartRequest } from '@/redux/reducers/cartReducer';
 import {
@@ -13,26 +14,52 @@ import { ProductCard } from './ProductCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { Loader } from '@/components/ui/Loader';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Product } from '@/types';
 
 export const BrowsePage = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const products = useSelector(selectAllProducts);
   const loading = useSelector(selectProductsLoading);
   const listMeta = useSelector(selectProductsListMeta);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [category, setCategory] = useState<string>('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState<'newest' | 'price-low' | 'price-high' | 'popular'>('newest');
+  // Initialize state from URL params
+  const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page') || '1'));
+  const [category, setCategory] = useState<string>(searchParams.get('category') || '');
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+  const sortFromParams = searchParams.get('sort');
+  const [sortBy, setSortBy] = useState<'newest' | 'price-low' | 'price-high' | 'popular'>(
+    (sortFromParams === 'price-low' || sortFromParams === 'price-high' || sortFromParams === 'popular') 
+      ? sortFromParams 
+      : 'newest'
+  );
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([
+    parseInt(searchParams.get('minPrice') || '0'),
+    parseInt(searchParams.get('maxPrice') || '1000')
+  ]);
+  const [showPriceFilter, setShowPriceFilter] = useState(false);
+
+  // Update URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (currentPage > 1) params.set('page', currentPage.toString());
+    if (category) params.set('category', category);
+    if (searchTerm) params.set('search', searchTerm);
+    if (sortBy !== 'newest') params.set('sort', sortBy);
+    if (priceRange[0] > 0) params.set('minPrice', priceRange[0].toString());
+    if (priceRange[1] < 1000) params.set('maxPrice', priceRange[1].toString());
+
+    const queryString = params.toString();
+    const newUrl = queryString ? `/marketplace?${queryString}` : '/marketplace';
+    router.replace(newUrl, { scroll: false });
+  }, [currentPage, category, searchTerm, sortBy, priceRange, router]);
 
   useEffect(() => {
     if(currentPage >= 1 && currentPage){
       dispatch(fetchProductsRequest({ page: currentPage, limit: 20 }));
     }
-  }, [currentPage]);
+  }, [currentPage, dispatch]);
 
 
   const handleAddToCart = (productId: string) => {
@@ -67,9 +94,9 @@ export const BrowsePage = () => {
   // Filter and sort products
   const filteredProducts = products
     .filter((p) => {
-      if (!searchTerm) return true;
-      const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           p.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = !searchTerm || 
+        p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = !category || p.category === category;
       const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
       return matchesSearch && matchesCategory && matchesPrice;
@@ -88,8 +115,6 @@ export const BrowsePage = () => {
           return 0;
       }
     });
-
-  const featuredProducts = products.slice(0, 3);
 
   if (loading && products.length === 0) {
     return (
@@ -183,13 +208,73 @@ export const BrowsePage = () => {
             </div>
           </div>
 
+          {/* Price Range Filter */}
+          <div className="mb-6 pb-6 border-b border-gray-200">
+            <button
+              onClick={() => setShowPriceFilter(!showPriceFilter)}
+              className="flex items-center justify-between w-full text-left"
+            >
+              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+                Price Range
+              </h3>
+              <svg
+                className={`w-5 h-5 transition-transform ${showPriceFilter ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {showPriceFilter && (
+              <div className="mt-4 space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <label className="text-xs text-gray-600 font-medium mb-1 block">Min Price</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max={priceRange[1]}
+                      value={priceRange[0]}
+                      onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
+                      className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  <span className="text-gray-400 mt-6">—</span>
+                  <div className="flex-1">
+                    <label className="text-xs text-gray-600 font-medium mb-1 block">Max Price</label>
+                    <input
+                      type="number"
+                      min={priceRange[0]}
+                      max="10000"
+                      value={priceRange[1]}
+                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 1000])}
+                      className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600">
+                    ${priceRange[0]} - ${priceRange[1]}
+                  </span>
+                  <button
+                    onClick={() => setPriceRange([0, 1000])}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Reset
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Sort and View Controls */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t border-gray-200">
             <div className="flex items-center gap-4">
               <label className="text-sm font-semibold text-gray-700">Sort by:</label>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
+                onChange={(e) => setSortBy(e.target.value as 'newest' | 'price-low' | 'price-high' | 'popular')}
                 className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium"
               >
                 <option value="newest">Newest First</option>
@@ -236,18 +321,20 @@ export const BrowsePage = () => {
           <p className="text-gray-600 font-medium">
             Showing <span className="text-gray-900 font-bold">{filteredProducts.length}</span> products
           </p>
-          {(searchTerm || category) && (
+          {(searchTerm || category || priceRange[0] > 0 || priceRange[1] < 1000) && (
             <button
               onClick={() => {
                 setSearchTerm('');
                 setCategory('');
+                setPriceRange([0, 1000]);
+                setCurrentPage(1);
               }}
               className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-              Clear filters
+              Clear all filters
             </button>
           )}
         </div>
