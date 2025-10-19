@@ -97,3 +97,25 @@ export interface Order {
   createdAt: string;
   updatedAt: string;
 }
+
+// Seller product management types
+export interface ProductFormData {
+  title: string;
+  description: string;
+  price: number;
+  currency: string;
+  category: string;
+  stock: number;
+  images: string[];
+}
+
+export interface SellerState {
+  myProducts: {
+    byId: Record<string, Product>;
+    allIds: string[];
+  };
+  loading: boolean;
+  error: string | null;
+  createSuccess: boolean;
+  updateSuccess: boolean;
+}

@@ -49,7 +49,7 @@ export default function ProfilePage() {
               <div>
                 <label className="text-sm text-[#4B5563] font-medium">Wallet Address</label>
                 <div className="mt-1 text-[#0E1116] font-mono text-sm">
-                  {user?.wallet || 'Not connected'}
+                  {user?.wallet_address || 'Not connected'}
                 </div>
               </div>
 
