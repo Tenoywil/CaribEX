@@ -3,10 +3,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { useEffect, useState } from 'react';
-import { selectIsAuthenticated, selectUser, selectAuthError, selectAuthLoading } from '@/redux/selectors/authSelectors';
+import {
+  selectIsAuthenticated,
+  selectUser,
+  selectAuthError,
+  selectAuthLoading,
+} from '@/redux/selectors/authSelectors';
 import { logout, loginRequest } from '@/redux/reducers/authReducer';
 import { apiClient } from '@/lib/apiClient';
-import { SiweMessage } from 'siwe';
 
 export const ConnectWalletButton = () => {
   const dispatch = useDispatch();
@@ -14,12 +18,12 @@ export const ConnectWalletButton = () => {
   const user = useSelector(selectUser);
   const authError = useSelector(selectAuthError);
   const authLoading = useSelector(selectAuthLoading);
-  
+
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();
-  
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,33 +36,54 @@ export const ConnectWalletButton = () => {
 
   const handleSIWEAuth = async () => {
     if (!address) return;
-    
+
     setIsLoading(true);
     setError(null);
 
     try {
       // Step 1: Get nonce from backend
-      const { nonce } = await apiClient.get<{ nonce: string }>('/v1/auth/nonce');
+      const { nonce } = await apiClient.get<{ nonce: string }>(
+        '/v1/auth/nonce'
+      );
 
       // Step 2: Create SIWE message (minimal format for backend compatibility)
       // Backend parser has 9-line limit, so we manually construct the message
-      const messageString = [
+            const messageString = [
         `${window.location.host} wants you to sign in with your Ethereum account:`,
+        '',
         address,
-        "",
+        '',
+        'Statement: Sign in to the app.',
+        '',
         `URI: ${window.location.origin}`,
         'Version: 1',
-        'Chain ID: 1',
+        `Chain ID: 1`,
         `Nonce: ${nonce}`,
         `Issued At: ${new Date().toISOString()}`
       ].join('\n');
+      const scheme = window.location.protocol.slice(0, -1);
+
+      // const siweMessage = new SiweMessage({
+      //   scheme,
+      //   domain: window.location.host,
+      //   address,
+      //   statement: 'Sign in to the app.',
+      //   uri: window.location.origin,
+      //   version: '1',
+      //   chainId: 1,
+      //   nonce,
+      // } as Partial<SiweMessage>);
 
       // Step 3: Sign the message with wallet
-      const signature = await signMessageAsync({ message: messageString });
+      const signature = await signMessageAsync({
+        message: messageString,
+      });
 
       // Step 4: Send signature to backend for verification
       if (signature) {
-        dispatch(loginRequest({ signature, message: messageString }));
+        dispatch(
+          loginRequest({ signature, message: messageString })
+        );
       } else {
         setError('Failed to get signature');
       }
@@ -84,6 +109,7 @@ export const ConnectWalletButton = () => {
     disconnect();
     dispatch(logout());
   };
+  console.log(user)
 
   if (isAuthenticated && user) {
     return (
@@ -91,7 +117,7 @@ export const ConnectWalletButton = () => {
         <div className="text-sm">
           <div className="font-medium">{user.handle}</div>
           <div className="text-gray-500 font-mono text-xs">
-            {user.wallet.slice(0, 6)}...{user.wallet.slice(-4)}
+            {user.wallet_address.slice(0, 6)}...{user.wallet_address.slice(-4)}
           </div>
         </div>
         <button

@@ -13,8 +13,9 @@ import { User, Session } from '@/types';
 function* handleLoginRequest(action: PayloadAction<{ signature: string; message: string }>) {
   try {
     // Call API to verify SIWE signature
+    // Use array notation to preserve 'this' context
     const response: { user: User; session: Session } = yield call(
-      apiClient.post,
+      [apiClient, 'post'],
       '/v1/auth/siwe',
       {
         signature: action.payload.signature,
@@ -32,7 +33,7 @@ function* handleLoginRequest(action: PayloadAction<{ signature: string; message:
 function* handleLogout() {
   try {
     // Call API to invalidate session
-    yield call(apiClient.post, '/v1/auth/logout');
+    yield call([apiClient, 'post'], '/v1/auth/logout');
   } catch (error) {
     console.error('Logout error:', error);
   }

@@ -3,7 +3,7 @@
 export interface User {
   id: string;
   handle: string;
-  wallet: string;
+  wallet_address: string;
 }
 
 export interface Session {

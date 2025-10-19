@@ -8,44 +8,45 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // CaribEX Design System Colors
+        // CaribEX Design System Colors (using CSS custom properties)
         primary: {
-          DEFAULT: '#0074F0',
-          dark: '#0056B3',
+          DEFAULT: 'var(--color-primary)',
+          dark: 'var(--color-primary-dark)',
           light: '#00C2FF',
         },
-        secondary: '#00B878',
-        accent: '#F5B700',
-        background: '#F9FAFB',
-        surface: '#FFFFFF',
+        secondary: 'var(--color-secondary)',
+        accent: 'var(--color-accent)',
+        background: 'var(--color-background)',
+        surface: 'var(--color-surface)',
         text: {
-          primary: '#0E1116',
-          secondary: '#4B5563',
+          primary: 'var(--color-text-primary)',
+          secondary: 'var(--color-text-secondary)',
         },
-        border: '#E5E7EB',
-        error: '#EF4444',
-        warning: '#F59E0B',
-        success: '#10B981',
+        border: 'var(--color-border)',
+        error: 'var(--color-error)',
+        warning: 'var(--color-warning)',
+        success: 'var(--color-success)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       borderRadius: {
-        'sm': '8px',
-        'md': '12px',
-        'lg': '16px',
+        sm: 'var(--radius-sm)',
+        md: 'var(--radius-md)',
+        lg: 'var(--radius-lg)',
       },
       boxShadow: {
-        'sm': '0 1px 3px rgba(0, 0, 0, 0.08)',
-        'md': '0 4px 6px rgba(0, 0, 0, 0.1)',
-        'lg': '0 10px 15px rgba(0, 0, 0, 0.1)',
+        sm: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'gradient-primary': 'linear-gradient(90deg, #0074F0 0%, #00C2FF 100%)',
+        'gradient-conic':
+          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-primary': 'var(--color-primary-gradient)',
       },
     },
   },
   plugins: [],
-}
+};

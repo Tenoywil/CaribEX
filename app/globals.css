@@ -1,103 +1,169 @@
+@import 'tailwindcss';
+
 :root {
   /* Core Colors - CaribEX Design System */
-  --color-primary: #0074F0;
-  --color-primary-dark: #0056B3;
-  --color-primary-gradient: linear-gradient(90deg, #0074F0 0%, #00C2FF 100%);
-  --color-secondary: #00B878;
-  --color-accent: #F5B700;
-  
+  --color-primary: #0074f0;
+  --color-primary-dark: #0056b3;
+  --color-primary-gradient: linear-gradient(90deg, #0074f0 0%, #00c2ff 100%);
+  --color-secondary: #00b878;
+  --color-accent: #f5b700;
+
   /* Backgrounds */
-  --color-background: #F9FAFB;
-  --color-surface: #FFFFFF;
-  
+  --color-background: #f9fafb;
+  --color-surface: #ffffff;
+
   /* Text Colors */
-  --color-text-primary: #0E1116;
-  --color-text-secondary: #4B5563;
-  
+  --color-text-primary: #0e1116;
+  --color-text-secondary: #4b5563;
+
   /* Utility Colors */
-  --color-border: #E5E7EB;
-  --color-error: #EF4444;
-  --color-warning: #F59E0B;
-  --color-success: #10B981;
-  
+  --color-border: #e5e7eb;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-success: #10b981;
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
   --spacing-lg: 24px;
   --spacing-xl: 32px;
-  
+
   /* Border Radius */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer base {
   body {
-    @apply bg-[#F9FAFB] text-[#0E1116];
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family:
+      'Inter',
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
 }
 
 @layer components {
   /* Primary Button */
   .btn-primary {
-    @apply px-6 py-3 bg-[#0074F0] text-white rounded-lg font-semibold;
-    @apply hover:bg-[#0056B3] transition-all duration-200;
-    @apply active:scale-95;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    transition: all 0.2s;
   }
-  
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-dark);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.95);
+  }
+
   /* Secondary Button */
   .btn-secondary {
-    @apply px-6 py-3 border-2 border-[#0074F0] text-[#0074F0] rounded-lg font-semibold;
-    @apply hover:bg-[#0074F0] hover:text-white transition-all duration-200;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    color: var(--color-primary);
+    background-color: transparent;
+    transition: all 0.2s;
   }
-  
+
+  .btn-secondary:hover {
+    background-color: var(--color-primary);
+    color: white;
+  }
+
   /* Card */
   .card {
-    @apply bg-white rounded-xl shadow-sm p-6;
-    @apply hover:shadow-md transition-shadow duration-200;
+    background-color: var(--color-surface);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s;
   }
-  
+
+  .card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
   /* Badge */
   .badge {
-    @apply px-3 py-1 rounded-full text-sm font-medium;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
   }
-  
+
   .badge-success {
-    @apply bg-green-100 text-green-700;
+    background-color: #dcfce7;
+    color: #15803d;
   }
-  
+
+  @media (prefers-color-scheme: dark) {
+    .badge-success {
+      background-color: #14532d;
+      color: #86efac;
+    }
+  }
+
   .badge-warning {
-    @apply bg-yellow-100 text-yellow-700;
+    background-color: #fef3c7;
+    color: #a16207;
   }
-  
+
+  @media (prefers-color-scheme: dark) {
+    .badge-warning {
+      background-color: #713f12;
+      color: #fde047;
+    }
+  }
+
   .badge-error {
-    @apply bg-red-100 text-red-700;
+    background-color: #fee2e2;
+    color: #b91c1c;
   }
-  
+
+  @media (prefers-color-scheme: dark) {
+    .badge-error {
+      background-color: #7f1d1d;
+      color: #fca5a5;
+    }
+  }
+
   .badge-primary {
-    @apply bg-blue-100 text-blue-700;
+    background-color: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .badge-primary {
+      background-color: #1e3a8a;
+      color: #93c5fd;
+    }
   }
 }
 
 @layer utilities {
   .gradient-primary {
-    background: linear-gradient(90deg, #0074F0 0%, #00C2FF 100%);
+    background: var(--color-primary-gradient);
   }
-  
+
   .text-gradient {
-    background: linear-gradient(90deg, #0074F0 0%, #00C2FF 100%);
+    background: var(--color-primary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
