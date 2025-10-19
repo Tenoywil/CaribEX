@@ -1,13 +1,13 @@
-# CaribX — Frontend Blueprint (Next.js 15, TypeScript, Redux Toolkit + Redux-Saga)
+# CaribEX — Frontend Blueprint (Next.js 15, TypeScript, Redux Toolkit + Redux-Saga)
 
-**Project:** CaribX — Blockchain Money Transfer & Marketplace for Jamaica & the Caribbean
+**Project:** CaribEX — Blockchain Money Transfer & Marketplace for Jamaica & the Caribbean
 **Purpose:** Provide a fast, accessible, and secure web frontend that lets users connect wallets (SIWE), send/receive funds, browse and list products, manage carts/orders, and view wallet history. Designed for solo hackathon delivery with an eye toward production-readiness.
 
 ---
 
 ## 1) Executive Summary & Conversation Context
 
-This frontend plan complements the CaribX backend blueprint. It follows the conversation requirements: Next.js 15 (App Router), Redux Toolkit with clear separation of reducers/selectors/sagas, event-driven flows, in-memory + Redis sync caching, and SIWE wallet authentication. Components explicitly include send/receive flows, marketplace, cart/order management, and wallet dashboards.
+This frontend plan complements the CaribEX backend blueprint. It follows the conversation requirements: Next.js 15 (App Router), Redux Toolkit with clear separation of reducers/selectors/sagas, event-driven flows, in-memory + Redis sync caching, and SIWE wallet authentication. Components explicitly include send/receive flows, marketplace, cart/order management, and wallet dashboards.
 
 This canvas is meant to be Copilot-ready and contains scaffold commands, directory layouts, component responsibilities, state shapes, and testing/CI guidance.
 
@@ -25,8 +25,8 @@ This canvas is meant to be Copilot-ready and contains scaffold commands, directo
 ## 3) Project Scaffold & Commands
 
 ```bash
-npx create-next-app@latest caribx-frontend --typescript --use-npm
-cd caribx-frontend
+npx create-next-app@latest CaribEX-frontend --typescript --use-npm
+cd CaribEX-frontend
 npm install @reduxjs/toolkit react-redux redux-saga ethers wagmi axios swr reselect redux-saga-test-plan
 # dev tools
 npm install -D jest @testing-library/react @testing-library/jest-dom msw playwright eslint prettier
@@ -193,14 +193,14 @@ Cache invalidation rules
 
 ## 11) Scaffolding Prompts for Copilot / AI
 
-* "Scaffold a Next.js 15 TypeScript app named CaribX with Redux Toolkit, Redux-Saga, wagmi, and an initial set of components for wallet auth (SIWE), send/receive flows, product browse, cart, and checkout. Create store, root saga, example reducer/selectors/saga for products and wallet."
+* "Scaffold a Next.js 15 TypeScript app named CaribEX with Redux Toolkit, Redux-Saga, wagmi, and an initial set of components for wallet auth (SIWE), send/receive flows, product browse, cart, and checkout. Create store, root saga, example reducer/selectors/saga for products and wallet."
 * "Generate SendForm.tsx, SendConfirmation.tsx, ReceiveModal.tsx, and wallet saga that handles create-pending-tx -> sign -> submit -> confirm flow."
 
 ---
 
 ## 12) Prioritized Hackathon Roadmap (time-boxed)
 
-1. Scaffold project + Connect to CaribX backend dev endpoints — 20m
+1. Scaffold project + Connect to CaribEX backend dev endpoints — 20m
 2. Implement wallet SIWE connect flow + `GET /v1/auth/nonce` → `POST /v1/auth/siwe` → set session cookie — 40m
 3. Implement `BrowsePage` + `ProductCard` with product list caching + pagination — 40m
 4. Implement `SendForm` + `SendConfirmation` + wallet saga for sign & send (mock backend) — 60m
