@@ -19,7 +19,7 @@ export const ConnectWalletButton = () => {
   const authError = useSelector(selectAuthError);
   const authLoading = useSelector(selectAuthLoading);
 
-  const { address, isConnected } = useAccount();
+  const { address, isConnected,} = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const { signMessageAsync } = useSignMessage();

@@ -1,18 +1,19 @@
 'use client';
 
 import { useSelector } from 'react-redux';
-import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';
+import { selectIsAuthenticated, selectIsCheckingSession } from '@/redux/selectors/authSelectors';
 import { CartList } from '@/components/cart/CartList';
 import { CartSummary } from '@/components/cart/CartSummary';
 
 export default function CartPage() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isCheckingSession = useSelector(selectIsCheckingSession);
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
       
-      {!isAuthenticated && (
+      {!isCheckingSession && !isAuthenticated && (
         <div className="mb-6 card bg-blue-50 border-blue-200">
           <p className="text-[#0074F0]">
             <a href="/login" className="font-semibold hover:underline">

@@ -1,10 +1,11 @@
 'use client';
 
-import { ConnectWalletButton } from '@/components/wallet/ConnectWalletButton';
 import { useRouter } from 'next/navigation';
-import { useSelector } from 'react-redux';
-import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+
+import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';
+import { ConnectWalletButton } from '@/components/wallet/ConnectWalletButton';
 
 export default function LoginPage() {
   const router = useRouter();
