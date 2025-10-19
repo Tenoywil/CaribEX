@@ -13,6 +13,7 @@ export const Header = () => {
   const user = useSelector(selectUser);
   const cartItemCount = useSelector(selectCartItemCount);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -27,7 +28,8 @@ export const Header = () => {
             <span className="text-gradient">CaribEX</span>
           </Link>
 
-          <div className="flex items-center gap-6">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-6">
             <Link 
               href="/marketplace" 
               className="text-[#4B5563] hover:text-[#0074F0] font-medium transition-colors"
@@ -57,13 +59,13 @@ export const Header = () => {
                 {/* Additional navigation for logged-in users */}
                 <Link 
                   href="/checkout" 
-                  className="text-[#4B5563] hover:text-[#0074F0] font-medium transition-colors hidden md:block"
+                  className="text-[#4B5563] hover:text-[#0074F0] font-medium transition-colors"
                 >
                   Orders
                 </Link>
                 <Link 
                   href="/sellers" 
-                  className="text-[#4B5563] hover:text-[#0074F0] font-medium transition-colors hidden md:block"
+                  className="text-[#4B5563] hover:text-[#0074F0] font-medium transition-colors"
                 >
                   Sell
                 </Link>
@@ -77,7 +79,7 @@ export const Header = () => {
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
                       {user?.handle?.charAt(0).toUpperCase() || 'U'}
                     </div>
-                    <span className="hidden md:inline">{user?.handle || 'User'}</span>
+                    <span>{user?.handle || 'User'}</span>
                     <svg 
                       className={`w-4 h-4 transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
                       fill="none" 
@@ -115,28 +117,6 @@ export const Header = () => {
                         </Link>
                         
                         <Link
-                          href="/checkout"
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors md:hidden"
-                          onClick={() => setShowUserMenu(false)}
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                          </svg>
-                          My Orders
-                        </Link>
-                        
-                        <Link
-                          href="/sellers"
-                          className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors md:hidden"
-                          onClick={() => setShowUserMenu(false)}
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                          </svg>
-                          Seller Dashboard
-                        </Link>
-
-                        <Link
                           href="/wallet"
                           className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                           onClick={() => setShowUserMenu(false)}
@@ -172,7 +152,103 @@ export const Header = () => {
               </Link>
             )}
           </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center gap-4">
+            {/* Cart icon for mobile */}
+            <Link href="/cart" className="relative">
+              <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#EF4444] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-semibold">
+                  {cartItemCount}
+                </span>
+              )}
+            </Link>
+            
+            <button
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="text-gray-600 hover:text-gray-900"
+              aria-label="Toggle menu"
+            >
+              {showMobileMenu ? (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {showMobileMenu && (
+          <div className="md:hidden mt-4 pb-4 border-t border-gray-200 pt-4">
+            <div className="flex flex-col space-y-3">
+              <Link
+                href="/marketplace"
+                className="text-gray-700 hover:text-blue-600 font-medium py-2"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Marketplace
+              </Link>
+              <Link
+                href="/wallet"
+                className="text-gray-700 hover:text-blue-600 font-medium py-2"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Wallet
+              </Link>
+              
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href="/checkout"
+                    className="text-gray-700 hover:text-blue-600 font-medium py-2"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Orders
+                  </Link>
+                  <Link
+                    href="/sellers"
+                    className="text-gray-700 hover:text-blue-600 font-medium py-2"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Sell
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="text-gray-700 hover:text-blue-600 font-medium py-2"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setShowMobileMenu(false);
+                    }}
+                    className="text-left text-red-600 hover:text-red-700 font-medium py-2"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="text-blue-600 hover:text-blue-700 font-semibold py-2"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Connect Wallet
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
     </header>
   );
