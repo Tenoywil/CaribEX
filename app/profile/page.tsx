@@ -3,21 +3,24 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { selectIsAuthenticated, selectUser } from '@/redux/selectors/authSelectors';
+import { selectIsAuthenticated, selectUser, selectIsCheckingSession } from '@/redux/selectors/authSelectors';
 import { Loader } from '@/components/ui/Loader';
 
 export default function ProfilePage() {
   const router = useRouter();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isCheckingSession = useSelector(selectIsCheckingSession);
   const user = useSelector(selectUser);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    // Wait for session check to complete before redirecting
+    if (!isCheckingSession && !isAuthenticated) {
       router.push('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isCheckingSession, router]);
 
-  if (!isAuthenticated) {
+  // Show loading state while checking session or if not authenticated
+  if (isCheckingSession || !isAuthenticated) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader size="lg" />

@@ -7,12 +7,19 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loading: false,
   error: null,
+  isCheckingSession: true, // Start as true to check for existing session
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    checkSessionRequest: (state) => {
+      state.isCheckingSession = true;
+    },
+    checkSessionComplete: (state) => {
+      state.isCheckingSession = false;
+    },
     loginRequest: (state, action: PayloadAction<{ signature: string; message: string }>) => {
       state.loading = true;
       state.error = null;
@@ -23,6 +30,7 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.loading = false;
       state.error = null;
+      state.isCheckingSession = false;
     },
     loginFailure: (state, action: PayloadAction<string>) => {
       state.loading = false;
@@ -35,6 +43,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;
+      state.isCheckingSession = false;
     },
     clearError: (state) => {
       state.error = null;
@@ -45,9 +54,10 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.loading = false;
       state.error = null;
+      state.isCheckingSession = false;
     },
   },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, logout, clearError, restoreSession } = authSlice.actions;
+export const { checkSessionRequest, checkSessionComplete, loginRequest, loginSuccess, loginFailure, logout, clearError, restoreSession } = authSlice.actions;
 export const authReducer = authSlice.reducer;

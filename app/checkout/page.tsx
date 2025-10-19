@@ -3,21 +3,24 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { selectIsAuthenticated } from '@/redux/selectors/authSelectors';
+import { selectIsAuthenticated, selectIsCheckingSession } from '@/redux/selectors/authSelectors';
 import { CheckoutForm } from '@/components/cart/CheckoutForm';
 import { Loader } from '@/components/ui/Loader';
 
 export default function CheckoutPage() {
   const router = useRouter();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isCheckingSession = useSelector(selectIsCheckingSession);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    // Wait for session check to complete before redirecting
+    if (!isCheckingSession && !isAuthenticated) {
       router.push('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isCheckingSession, router]);
 
-  if (!isAuthenticated) {
+  // Show loading state while checking session or if not authenticated
+  if (isCheckingSession || !isAuthenticated) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader size="lg" />
