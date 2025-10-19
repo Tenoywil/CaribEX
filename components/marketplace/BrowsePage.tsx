@@ -10,7 +10,10 @@ import {
   selectProductsLoading,
   selectProductsListMeta,
 } from '@/redux/selectors/productsSelectors';
-import { selectCartLoading, selectCartError } from '@/redux/selectors/cartSelectors';
+import {
+  selectCartLoading,
+  selectCartError,
+} from '@/redux/selectors/cartSelectors';
 import { ProductCard } from './ProductCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { Loader } from '@/components/ui/Loader';
@@ -29,19 +32,29 @@ export const BrowsePage = () => {
   const { showToast } = useToast();
 
   // Initialize state from URL params
-  const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get('page') || '1'));
-  const [category, setCategory] = useState<string>(searchParams.get('category') || '');
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(searchParams.get('page') || '1')
+  );
+  const [category, setCategory] = useState<string>(
+    searchParams.get('category') || ''
+  );
+  const [searchTerm, setSearchTerm] = useState(
+    searchParams.get('search') || ''
+  );
   const sortFromParams = searchParams.get('sort');
-  const [sortBy, setSortBy] = useState<'newest' | 'price-low' | 'price-high' | 'popular'>(
-    (sortFromParams === 'price-low' || sortFromParams === 'price-high' || sortFromParams === 'popular') 
-      ? sortFromParams 
+  const [sortBy, setSortBy] = useState<
+    'newest' | 'price-low' | 'price-high' | 'popular'
+  >(
+    sortFromParams === 'price-low' ||
+      sortFromParams === 'price-high' ||
+      sortFromParams === 'popular'
+      ? sortFromParams
       : 'newest'
   );
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [priceRange, setPriceRange] = useState<[number, number]>([
     parseInt(searchParams.get('minPrice') || '0'),
-    parseInt(searchParams.get('maxPrice') || '1000')
+    parseInt(searchParams.get('maxPrice') || '1000'),
   ]);
   const [showPriceFilter, setShowPriceFilter] = useState(false);
 
@@ -61,7 +74,7 @@ export const BrowsePage = () => {
   }, [currentPage, category, searchTerm, sortBy, priceRange, router]);
 
   useEffect(() => {
-    if(currentPage >= 1 && currentPage){
+    if (currentPage >= 1 && currentPage) {
       dispatch(fetchProductsRequest({ page: currentPage, limit: 20 }));
     }
   }, [currentPage, dispatch]);
@@ -73,14 +86,13 @@ export const BrowsePage = () => {
     }
   }, [cartError, showToast]);
 
-
   const handleAddToCart = (productId: string) => {
     const product = products.find((p) => p.id === productId);
     if (!product) {
       showToast('Product not found', 'error');
       return;
     }
-    
+
     if (product.stock <= 0) {
       showToast('This product is out of stock', 'warning');
       return;
@@ -119,10 +131,18 @@ export const BrowsePage = () => {
   // Filter and sort products
   const filteredProducts = products
     .filter((p) => {
-      const matchesSearch = !searchTerm || 
+      if (searchTerm === undefined) {
+        return p;
+      }
+
+      const matchesSearch =
+        !searchTerm ||
         p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = !category || p.category === category;
+      const matchesCategory =
+        !category ||
+        p.category?.name?.replace('\u0026', ' ').toLowerCase() ===
+          category.toLowerCase();
       const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
       return matchesSearch && matchesCategory && matchesPrice;
     })
@@ -133,7 +153,9 @@ export const BrowsePage = () => {
         case 'price-high':
           return b.price - a.price;
         case 'newest':
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
         case 'popular':
           return b.stock - a.stock; // Using stock as proxy for popularity
         default:
@@ -154,9 +176,13 @@ export const BrowsePage = () => {
       {/* Hero Section */}
       <div className="relative bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-10"></div>
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-        }}></div>
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              'url("data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+          }}
+        ></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-extrabold mb-4 tracking-tight">
@@ -189,8 +215,18 @@ export const BrowsePage = () => {
           {/* Search Bar */}
           <div className="relative mb-6">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg
+                className="h-5 w-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
             </div>
             <input
@@ -204,7 +240,9 @@ export const BrowsePage = () => {
 
           {/* Category Chips */}
           <div className="mb-6">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Categories</h3>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">
+              Categories
+            </h3>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setCategory('')}
@@ -248,32 +286,51 @@ export const BrowsePage = () => {
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
             {showPriceFilter && (
               <div className="mt-4 space-y-4">
                 <div className="flex items-center gap-4">
                   <div className="flex-1">
-                    <label className="text-xs text-gray-600 font-medium mb-1 block">Min Price</label>
+                    <label className="text-xs text-gray-600 font-medium mb-1 block">
+                      Min Price
+                    </label>
                     <input
                       type="number"
                       min="0"
                       max={priceRange[1]}
                       value={priceRange[0]}
-                      onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
+                      onChange={(e) =>
+                        setPriceRange([
+                          parseInt(e.target.value) || 0,
+                          priceRange[1],
+                        ])
+                      }
                       className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
                   <span className="text-gray-400 mt-6">—</span>
                   <div className="flex-1">
-                    <label className="text-xs text-gray-600 font-medium mb-1 block">Max Price</label>
+                    <label className="text-xs text-gray-600 font-medium mb-1 block">
+                      Max Price
+                    </label>
                     <input
                       type="number"
                       min={priceRange[0]}
                       max="10000"
                       value={priceRange[1]}
-                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 1000])}
+                      onChange={(e) =>
+                        setPriceRange([
+                          priceRange[0],
+                          parseInt(e.target.value) || 1000,
+                        ])
+                      }
                       className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
@@ -296,10 +353,20 @@ export const BrowsePage = () => {
           {/* Sort and View Controls */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pt-4 border-t border-gray-200">
             <div className="flex items-center gap-4">
-              <label className="text-sm font-semibold text-gray-700">Sort by:</label>
+              <label className="text-sm font-semibold text-gray-700">
+                Sort by:
+              </label>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'newest' | 'price-low' | 'price-high' | 'popular')}
+                onChange={(e) =>
+                  setSortBy(
+                    e.target.value as
+                      | 'newest'
+                      | 'price-low'
+                      | 'price-high'
+                      | 'popular'
+                  )
+                }
                 className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white font-medium"
               >
                 <option value="newest">Newest First</option>
@@ -320,7 +387,11 @@ export const BrowsePage = () => {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                   </svg>
                 </button>
@@ -332,8 +403,16 @@ export const BrowsePage = () => {
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
               </div>
@@ -344,9 +423,16 @@ export const BrowsePage = () => {
         {/* Results Count */}
         <div className="mb-6 flex justify-between items-center">
           <p className="text-gray-600 font-medium">
-            Showing <span className="text-gray-900 font-bold">{filteredProducts.length}</span> products
+            Showing{' '}
+            <span className="text-gray-900 font-bold">
+              {filteredProducts.length}
+            </span>{' '}
+            products
           </p>
-          {(searchTerm || category || priceRange[0] > 0 || priceRange[1] < 1000) && (
+          {(searchTerm ||
+            category ||
+            priceRange[0] > 0 ||
+            priceRange[1] < 1000) && (
             <button
               onClick={() => {
                 setSearchTerm('');
@@ -356,8 +442,18 @@ export const BrowsePage = () => {
               }}
               className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
               Clear all filters
             </button>
@@ -367,10 +463,13 @@ export const BrowsePage = () => {
         {/* Products Grid/List */}
         {filteredProducts.length > 0 ? (
           <>
-            <div className={viewMode === 'grid' 
-              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12"
-              : "flex flex-col gap-4 mb-12"
-            }>
+            <div
+              className={
+                viewMode === 'grid'
+                  ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12'
+                  : 'flex flex-col gap-4 mb-12'
+              }
+            >
               {filteredProducts.map((product, index) => (
                 <div
                   key={product.id}

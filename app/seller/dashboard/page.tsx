@@ -104,10 +104,10 @@ export default function SellerDashboardPage() {
 
               <div className="flex justify-between items-center mb-4">
                 <span className="text-xl font-bold text-blue-600">
-                  ${product.price} {product.currency}
+                  ETH {product.price}
                 </span>
                 <span className="text-sm text-gray-500">
-                  Stock: {product.stock}
+                  Stock: {product.quantity}
                 </span>
               </div>
 

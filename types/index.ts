@@ -27,9 +27,17 @@ export interface Product {
   currency: string;
   images: string[];
   sellerId: string;
-  category: string;
+  seller_id?: string; // for backend compatibility
+  categoryId: string;
+  category: {
+    id: string;
+    name: string;
+  };
   stock: number;
+  quantity?: number; // for backend compatibility
+  isActive: boolean;
   createdAt: string;
+  created_at?: string; // for backend compatibility
   updatedAt: string;
 }
 

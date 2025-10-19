@@ -20,12 +20,12 @@ export const ProductCard = ({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!disabled && product.stock > 0) {
+    if (!disabled && (product.quantity ?? 0) > 0) {
       onAddToCart(product.id);
     }
   };
 
-  const isLowStock = product.stock > 0 && product.stock <= 5;
+  const isLowStock = (product.quantity ?? 0) > 0 && (product.quantity ?? 0) <= 5;
   const isNew =
     new Date(product.createdAt) >
     new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -83,7 +83,7 @@ export const ProductCard = ({
                     {product.title}
                   </h3>
                   <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full ml-4">
-                    {product.category}
+                    {product.category?.name?.replace('\u0026', ' ')}
                   </span>
                 </div>
                 <p className="text-gray-600 mb-4 line-clamp-2">
@@ -94,16 +94,16 @@ export const ProductCard = ({
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                    {product.currency} {product.price.toFixed(2)}
+                    ETH {product.price.toFixed(2)}
                   </span>
                   <p className="text-sm text-gray-500 mt-1">
-                    {product.stock > 0
-                      ? `${product.stock} in stock`
+                    {(product.quantity ?? 0) > 0
+                      ? `${(product.quantity ?? 0)} in stock`
                       : 'Out of stock'}
                   </p>
                 </div>
 
-                {product.stock > 0 ? (
+                {(product.quantity ?? 0) > 0 ? (
                   <button
                     onClick={handleAddToCart}
                     disabled={disabled}
@@ -175,10 +175,14 @@ export const ProductCard = ({
           <div className="absolute inset-x-0 bottom-0 p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <button
               onClick={handleAddToCart}
-              disabled={disabled || product.stock === 0}
+              disabled={disabled || (product.quantity ?? 0) === 0}
               className="w-full py-2 bg-white text-blue-600 rounded-lg font-semibold shadow-lg hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {disabled ? 'Adding...' : product.stock === 0 ? 'Out of Stock' : 'Quick Add'}
+              {disabled
+                ? 'Adding...'
+                : (product.quantity ?? 0) === 0
+                  ? 'Out of Stock'
+                  : 'Quick Add'}
             </button>
           </div>
         </div>
@@ -187,7 +191,7 @@ export const ProductCard = ({
         <div className="p-4 flex-1 flex flex-col">
           <div className="mb-2">
             <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-              {product.category ?? ' Uncategorized'}
+              {product.category?.name?.replace('\u0026', ' ')}
             </span>
           </div>
 
@@ -202,14 +206,14 @@ export const ProductCard = ({
           <div className="mt-auto">
             <div className="flex items-center justify-between mb-3">
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                {product.currency} {product.price.toFixed(2)}
+                ETH {product.price.toFixed(2)}
               </span>
             </div>
 
-            {product.stock > 0 ? (
+            {(product.quantity ?? 0) > 0 ? (
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500">
-                  {product.stock} in stock
+                  {(product.quantity ?? 0)} in stock
                 </span>
                 <button
                   onClick={handleAddToCart}

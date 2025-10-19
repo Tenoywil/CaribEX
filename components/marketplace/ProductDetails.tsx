@@ -19,20 +19,20 @@ export const ProductDetails = ({
   const [selectedImage, setSelectedImage] = useState(0);
 
   const handleAddToCart = () => {
-    if (!disabled && product.stock > 0) {
+    if (!disabled && (product?.quantity ?? 0) > 0) {
       onAddToCart(product.id, quantity);
     }
   };
 
   const handleQuantityChange = (delta: number) => {
-    const newQty = Math.max(1, Math.min(product.stock, quantity + delta));
+    const newQty = Math.max(1, Math.min((product?.quantity ?? 0), quantity + delta));
     setQuantity(newQty);
   };
 
   const isNew =
     new Date(product.createdAt) >
     new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  const isLowStock = product.stock > 0 && product.stock <= 5;
+  const isLowStock = (product?.quantity ?? 0) > 0 && (product?.quantity ?? 0) <= 5;
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -115,7 +115,7 @@ export const ProductDetails = ({
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
               </svg>
-              {product.category}
+              {product.category?.name?.replace("\u0026", " ")}
             </span>
           </div>
 
@@ -161,7 +161,7 @@ export const ProductDetails = ({
                 <div>
                   <p className="text-xs text-gray-500">Category</p>
                   <p className="font-semibold text-gray-900">
-                    {product.category}
+                    {product.category?.name?.replace("\u0026", " ")}
                   </p>
                 </div>
               </div>
@@ -182,8 +182,8 @@ export const ProductDetails = ({
                 <div>
                   <p className="text-xs text-gray-500">Availability</p>
                   <p className="font-semibold text-gray-900">
-                    {product.stock > 0
-                      ? `${product.stock} in stock`
+                    {(product?.quantity ?? 0) > 0
+                      ? `${product?.quantity ?? 0} in stock`
                       : 'Out of stock'}
                   </p>
                 </div>
@@ -192,7 +192,7 @@ export const ProductDetails = ({
           </div>
 
           {/* Purchase Section */}
-          {product.stock > 0 ? (
+          {(product?.quantity ?? 0) > 0 ? (
             <div className="bg-white rounded-xl p-6 border-2 border-blue-200 shadow-lg">
               <div className="mb-6">
                 <label className="block text-sm font-bold text-gray-700 mb-3">
@@ -212,7 +212,7 @@ export const ProductDetails = ({
                   <button
                     onClick={() => handleQuantityChange(1)}
                     className="w-12 h-12 flex items-center justify-center border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-lg"
-                    disabled={quantity >= product.stock}
+                    disabled={quantity >= (product?.quantity ?? 0)}
                   >
                     +
                   </button>
