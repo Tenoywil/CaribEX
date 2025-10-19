@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { store } from '@/redux/store';
 import { config } from '@/lib/wagmi';
 import { AuthProvider } from '@/components/auth/AuthProvider';
+import { ToastProvider } from '@/components/ui/ToastContainer';
 
 const queryClient = new QueryClient();
 
@@ -14,7 +15,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </AuthProvider>
         </Provider>
       </QueryClientProvider>
     </WagmiProvider>
