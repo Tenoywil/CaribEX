@@ -1,7 +1,7 @@
 'use client';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   selectCartItems,
   selectCartTotal,
@@ -22,24 +22,39 @@ export const CartList = () => {
   const cartError = useSelector(selectCartError);
   const cartLoading = useSelector(selectCartLoading);
   const { showToast } = useToast();
+  const lastCartActionRef = useRef<{ action: string; itemId?: string } | null>(null);
 
-  // Show toast when cart error occurs
+  // Listen for cart operation success/failure
   useEffect(() => {
-    if (cartError) {
-      showToast(cartError, 'error');
+    // This effect runs when cartLoading changes from true to false
+    if (!cartLoading && lastCartActionRef.current) {
+      const { action } = lastCartActionRef.current;
+      
+      if (action === 'remove') {
+        if (cartError) {
+          showToast(cartError, 'error');
+        } else {
+          showToast('Item removed from cart', 'success');
+        }
+      }
+      
+      lastCartActionRef.current = null;
     }
-  }, [cartError, showToast]);
+  }, [cartLoading, cartError, showToast]);
 
   const handleRemove = (itemId: string) => {
     if (cartLoading) {
       return; // Prevent multiple rapid clicks
     }
+    
+    // Track this action so we can show toast on completion
+    lastCartActionRef.current = { action: 'remove', itemId };
+    
     dispatch(removeFromCartRequest(itemId));
-    showToast('Item removed from cart', 'success');
   };
 
   const handleQuantityChange = (itemId: string, newQty: number) => {
-    if (newQty > 0) {
+    if (newQty > 0 && !cartLoading) {
       dispatch(updateCartItemQty({ id: itemId, qty: newQty }));
     }
   };

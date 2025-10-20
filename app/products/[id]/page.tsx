@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProductByIdRequest } from '@/redux/reducers/productsReducer';
 import { addToCartRequest } from '@/redux/reducers/cartReducer';
@@ -21,6 +21,7 @@ export default function ProductPage() {
   const cartLoading = useSelector(selectCartLoading);
   const cartError = useSelector(selectCartError);
   const { showToast } = useToast();
+  const lastCartActionRef = useRef<{ action: string; quantity: number } | null>(null);
 
   useEffect(() => {
     if (productId) {
@@ -28,12 +29,23 @@ export default function ProductPage() {
     }
   }, [productId, dispatch]);
 
-  // Show toast when cart error occurs
+  // Listen for cart operation success/failure
   useEffect(() => {
-    if (cartError) {
-      showToast(cartError, 'error');
+    // This effect runs when cartLoading changes from true to false
+    if (!cartLoading && lastCartActionRef.current) {
+      const { action, quantity } = lastCartActionRef.current;
+      
+      if (action === 'add') {
+        if (cartError) {
+          showToast(cartError, 'error');
+        } else if (product) {
+          showToast(`${product.title} (${quantity}x) added to cart!`, 'success');
+        }
+      }
+      
+      lastCartActionRef.current = null;
     }
-  }, [cartError, showToast]);
+  }, [cartLoading, cartError, product, showToast]);
 
   const handleAddToCart = (productId: string, quantity: number) => {
     if (!product) {
@@ -55,6 +67,9 @@ export default function ProductPage() {
       return; // Prevent multiple rapid clicks
     }
 
+    // Track this action so we can show toast on completion
+    lastCartActionRef.current = { action: 'add', quantity };
+
     dispatch(
       addToCartRequest({
         productId,
@@ -62,7 +77,6 @@ export default function ProductPage() {
         price: product.price,
       })
     );
-    showToast(`${product.title} (${quantity}x) added to cart!`, 'success');
   };
 
   if (loading || !product) {

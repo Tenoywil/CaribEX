@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { fetchProductsRequest } from '@/redux/reducers/productsReducer';
@@ -30,6 +30,7 @@ export const BrowsePage = () => {
   const cartLoading = useSelector(selectCartLoading);
   const cartError = useSelector(selectCartError);
   const { showToast } = useToast();
+  const lastCartActionRef = useRef<{ action: string; productId: string } | null>(null);
 
   // Initialize state from URL params
   const [currentPage, setCurrentPage] = useState(
@@ -79,12 +80,27 @@ export const BrowsePage = () => {
     }
   }, [currentPage, dispatch]);
 
-  // Show toast when cart error occurs
+  // Listen for cart operation success/failure
   useEffect(() => {
-    if (cartError) {
-      showToast(cartError, 'error');
+    // This effect runs when cartLoading changes from true to false
+    // We use a ref to track which action was initiated
+    if (!cartLoading && lastCartActionRef.current) {
+      const { action, productId } = lastCartActionRef.current;
+      
+      if (action === 'add') {
+        if (cartError) {
+          showToast(cartError, 'error');
+        } else {
+          const product = products.find((p) => p.id === productId);
+          if (product) {
+            showToast(`${product.title} added to cart!`, 'success');
+          }
+        }
+      }
+      
+      lastCartActionRef.current = null;
     }
-  }, [cartError, showToast]);
+  }, [cartLoading, cartError, products, showToast]);
 
   const handleAddToCart = (productId: string) => {
     const product = products.find((p) => p.id === productId);
@@ -102,6 +118,9 @@ export const BrowsePage = () => {
       return; // Prevent multiple rapid clicks
     }
 
+    // Track this action so we can show toast on completion
+    lastCartActionRef.current = { action: 'add', productId };
+
     dispatch(
       addToCartRequest({
         productId,
@@ -109,7 +128,6 @@ export const BrowsePage = () => {
         price: product.price,
       })
     );
-    showToast(`${product.title} added to cart!`, 'success');
   };
 
   const handlePageChange = (page: number) => {
