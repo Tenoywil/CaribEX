@@ -19,20 +19,20 @@ export const ProductDetails = ({
   const [selectedImage, setSelectedImage] = useState(0);
 
   const handleAddToCart = () => {
-    if (!disabled && (product?.stock ?? 0) > 0) {
+    if (!disabled && (product?.quantity ?? 0) > 0) {
       onAddToCart(product.id, quantity);
     }
   };
 
   const handleQuantityChange = (delta: number) => {
-    const newQty = Math.max(1, Math.min((product?.stock ?? 0), quantity + delta));
+    const newQty = Math.max(1, Math.min((product?.quantity ?? 0), quantity + delta));
     setQuantity(newQty);
   };
 
   const isNew =
     new Date(product.createdAt) >
     new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-  const isLowStock = (product?.stock ?? 0) > 0 && (product?.stock ?? 0) <= 5;
+  const isLowStock = (product?.quantity ?? 0) > 0 && (product?.quantity ?? 0) <= 5;
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -182,8 +182,8 @@ export const ProductDetails = ({
                 <div>
                   <p className="text-xs text-gray-500">Availability</p>
                   <p className="font-semibold text-gray-900">
-                    {(product?.stock ?? 0) > 0
-                      ? `${product?.stock ?? 0} in stock`
+                    {(product?.quantity ?? 0) > 0
+                      ? `${product?.quantity ?? 0} in stock`
                       : 'Out of stock'}
                   </p>
                 </div>
@@ -192,7 +192,7 @@ export const ProductDetails = ({
           </div>
 
           {/* Purchase Section */}
-          {(product?.stock ?? 0) > 0 ? (
+          {(product?.quantity ?? 0) > 0 ? (
             <div className="bg-white rounded-xl p-6 border-2 border-blue-200 shadow-lg">
               <div className="mb-6">
                 <label className="block text-sm font-bold text-gray-700 mb-3">
@@ -212,7 +212,7 @@ export const ProductDetails = ({
                   <button
                     onClick={() => handleQuantityChange(1)}
                     className="w-12 h-12 flex items-center justify-center border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-bold text-lg"
-                    disabled={quantity >= (product?.stock ?? 0)}
+                    disabled={quantity >= (product?.quantity ?? 0)}
                   >
                     +
                   </button>
