@@ -19,6 +19,7 @@
     "@spruceid/siwe-parser": "^3.0.0",
     "@tailwindcss/postcss": "^4.1.14",
     "@tanstack/react-query": "^5.90.5",
+    "antd": "^5.27.6",
     "axios": "^1.6.2",
     "ethers": "^6.9.0",
     "next": "^15.0.0",

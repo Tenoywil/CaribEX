@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { notification } from 'antd';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { fetchProductsRequest } from '@/redux/reducers/productsReducer';
 import { addToCartRequest } from '@/redux/reducers/cartReducer';
 import {
@@ -18,7 +20,7 @@ import { ProductCard } from './ProductCard';
 import { Pagination } from '@/components/ui/Pagination';
 import { Loader } from '@/components/ui/Loader';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { useToast } from '@/components/ui/ToastContainer';
+import { useCartDrawer } from '@/components/cart/CartDrawerProvider';
 
 export const BrowsePage = () => {
   const dispatch = useDispatch();
@@ -29,7 +31,7 @@ export const BrowsePage = () => {
   const listMeta = useSelector(selectProductsListMeta);
   const cartLoading = useSelector(selectCartLoading);
   const cartError = useSelector(selectCartError);
-  const { showToast } = useToast();
+  const { openCartDrawer } = useCartDrawer();
   const lastCartActionRef = useRef<{ action: string; productId: string } | null>(null);
 
   // Initialize state from URL params
@@ -89,28 +91,68 @@ export const BrowsePage = () => {
       
       if (action === 'add') {
         if (cartError) {
-          showToast(cartError, 'error');
+          notification.error({
+            message: 'Failed to Add to Cart',
+            description: cartError,
+            icon: <CloseCircleOutlined style={{ color: '#ff4d4f' }} />,
+            placement: 'topRight',
+            duration: 3,
+          });
         } else {
           const product = products.find((p) => p.id === productId);
           if (product) {
-            showToast(`${product.title} added to cart!`, 'success');
+            notification.success({
+              message: 'Added to Cart',
+              description: (
+                <div>
+                  <p className="font-semibold">{product.title}</p>
+                  <p className="text-sm text-gray-600">Successfully added to your cart</p>
+                </div>
+              ),
+              icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
+              placement: 'topRight',
+              duration: 2,
+              btn: (
+                <button
+                  onClick={() => {
+                    notification.destroy();
+                    openCartDrawer();
+                  }}
+                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                >
+                  View Cart
+                </button>
+              ),
+            });
+            // Auto-open cart drawer after a short delay
+            setTimeout(() => openCartDrawer(), 500);
           }
         }
       }
       
       lastCartActionRef.current = null;
     }
-  }, [cartLoading, cartError, products, showToast]);
+  }, [cartLoading, cartError, products, openCartDrawer]);
 
   const handleAddToCart = (productId: string) => {
     const product = products.find((p) => p.id === productId);
     if (!product) {
-      showToast('Product not found', 'error');
+      notification.error({
+        message: 'Error',
+        description: 'Product not found',
+        placement: 'topRight',
+        duration: 3,
+      });
       return;
     }
 
     if (product.stock <= 0) {
-      showToast('This product is out of stock', 'warning');
+      notification.warning({
+        message: 'Out of Stock',
+        description: 'This product is currently out of stock',
+        placement: 'topRight',
+        duration: 3,
+      });
       return;
     }
 

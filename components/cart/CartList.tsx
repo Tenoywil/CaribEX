@@ -2,6 +2,8 @@
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useRef } from 'react';
+import { notification } from 'antd';
+import { CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import {
   selectCartItems,
   selectCartTotal,
@@ -13,7 +15,6 @@ import {
   updateCartItemQty,
 } from '@/redux/reducers/cartReducer';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { useToast } from '@/components/ui/ToastContainer';
 
 export const CartList = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,6 @@ export const CartList = () => {
   const total = useSelector(selectCartTotal);
   const cartError = useSelector(selectCartError);
   const cartLoading = useSelector(selectCartLoading);
-  const { showToast } = useToast();
   const lastCartActionRef = useRef<{ action: string; itemId?: string } | null>(null);
 
   // Listen for cart operation success/failure
@@ -32,15 +32,27 @@ export const CartList = () => {
       
       if (action === 'remove') {
         if (cartError) {
-          showToast(cartError, 'error');
+          notification.error({
+            message: 'Failed to Remove Item',
+            description: cartError,
+            icon: <CloseCircleOutlined style={{ color: '#ff4d4f' }} />,
+            placement: 'topRight',
+            duration: 3,
+          });
         } else {
-          showToast('Item removed from cart', 'success');
+          notification.success({
+            message: 'Item Removed',
+            description: 'Item successfully removed from cart',
+            icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
+            placement: 'topRight',
+            duration: 2,
+          });
         }
       }
       
       lastCartActionRef.current = null;
     }
-  }, [cartLoading, cartError, showToast]);
+  }, [cartLoading, cartError]);
 
   const handleRemove = (itemId: string) => {
     if (cartLoading) {
